@@ -10,6 +10,9 @@ export const transcriptionRouter = createTRPCRouter({
                 where: {
                     id: input.id,
                 },
+                select: {
+                    appointmentDetails: true
+                }
             });
             return transcription;
         }
@@ -47,5 +50,14 @@ export const transcriptionRouter = createTRPCRouter({
             return transcription;
         }),
     
-        
+    deleteTranscription: publicProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation (async ({ input, ctx }) => {
+            const transcription = await ctx.db.transcription.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+            return transcription;
+        })
     });
