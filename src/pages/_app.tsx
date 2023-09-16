@@ -5,13 +5,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { MantineProvider } from "@mantine/core";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   
   return (
-    <ClerkProvider {...pageProps}>
-      <Component {...pageProps} />
-    </ClerkProvider>
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <ClerkProvider {...pageProps}>
+        <Component {...pageProps} />
+      </ClerkProvider>
+    </MantineProvider>
   );
 };
 
