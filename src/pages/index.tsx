@@ -1,12 +1,10 @@
-import { Center } from "@mantine/core";
+import { Center, Flex } from "@mantine/core";
 import Recorder from "~/components/Recorder";
 
 export default function Home() {
-
   return (
-      <Center style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Recorder />
-      </Center>
-      
+    <Flex justify="center" align="center" style={{ height: "80vh" }}>
+      <Recorder />
+    </Flex>
   );
 }
