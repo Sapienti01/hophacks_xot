@@ -1,0 +1,12 @@
+
+{
+    "id": "1234",
+    "userID": "osavir",
+    "data": "Patient: Sarah, Doctor: Dr. Patel, Date: July 5, 2023, Location: City Hospital. Dr. Patel: Good afternoon, Sarah. How can I help you today? Sarah: Hello, Dr. Patel. I've had a persistent cough and fever for the past week, and I'm worried it might be more than just a cold. Dr. Patel: I see. Let's discuss your symptoms in detail. Is the cough dry or productive? Sarah: It's mostly dry, but I've had some phlegm. Dr. Patel: Have you noticed any shortness of breath or chest pain? Sarah: Yes, I've been feeling a bit short of breath, especially when I'm active. Dr. Patel: Thank you for sharing that. Given your symptoms, we should run some tests, including a chest X-ray and blood work, to determine the cause of your symptoms. In the meantime, I recommend rest and hydration. Sarah: Alright, Dr. Patel. Thank you for your help Patient: Sarah, Doctor: Dr. Patel, Date: July 5, 2023, Location: City Hospital. Dr. Patel: Good afternoon, Sarah. How can I help you today? Sarah: Hello, Dr. Patel. I've had a persistent cough and fever for the past week, and I'm worried it might be more than just a cold. Dr. Patel: I see. Let's discuss your symptoms in detail. Is the cough dry or productive? Sarah: It's mostly dry, but I've had some phlegm. Dr. Patel: Have you noticed any shortness of breath or chest pain? Sarah: Yes, I've been feeling a bit short of breath, especially when I'm active. Dr. Patel: Thank you for sharing that. Given your symptoms, we should run some tests, including a chest X-ray and blood work, to determine the cause of your symptoms. In the meantime, I recommend rest and hydration. Sarah: Alright, Dr. Patel. Thank you for your help ",
+    "audioId": "audio123",
+    "transcriptName": "",
+    "appointmentDate": "2023-09-16T15:30:00Z",
+    "appointmentType": "",
+    "drName": ""
+}
+
