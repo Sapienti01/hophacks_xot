@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mantine/core';
+import { Button, Center, Container, Stack, Title } from '@mantine/core';
 import axios from 'axios';
 import { useState } from 'react';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
@@ -46,11 +46,14 @@ const Recorder = () => {
 
   return (
     <Stack>
+        <Title>Record your Appointment</Title>
+        <Center>
       <AudioRecorder 
         onRecordingComplete={(blob) => void addAudioElement(blob)}
         recorderControls={recorderControls}
-        downloadOnSavePress={true}
+        showVisualizer={true}
       />
+      </Center>
     </Stack>
   )
 }

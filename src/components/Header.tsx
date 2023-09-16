@@ -42,31 +42,25 @@ import {
   export function HeaderMegaMenu() {
     const { classes, theme } = useStyles();
   
-  
     return (
       <Box >
         <Header height={60} px="md">
           <Group position="apart" sx={{ height: '100%' }}>
             <Icon24Hours size={30} color={theme.fn.primaryColor()} />
-  
             <Group sx={{ height: '100%' }} spacing={0}>
-              <a href="#" className={classes.link}>
+              <a href="/" className={classes.link}>
                 Home
               </a>
-              <a href="#" className={classes.link}>
+              <a href="/appointments" className={classes.link}>
                 Past Recordings
               </a>
-
             </Group>
-  
             <Group >
             <ActionIcon>
                 <IconWorld />
                 </ActionIcon>
-              <UserButton />
-              
+              <UserButton />    
             </Group>
-  
           </Group>
         </Header>
       </Box>
