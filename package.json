@@ -28,6 +28,7 @@
     "@trpc/server": "^10.37.1",
     "axios": "^1.5.0",
     "eventsource-parser": "^1.0.0",
+    "fs": "^0.0.1-security",
     "next": "^13.4.19",
     "openai": "^4.7.1",
     "react": "18.2.0",
