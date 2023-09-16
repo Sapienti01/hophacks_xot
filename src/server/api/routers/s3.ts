@@ -29,5 +29,4 @@ export const s3Router = createTRPCRouter({
 
       return await getSignedUrl(s3, putObjectCommand);
     }),
-
 });
