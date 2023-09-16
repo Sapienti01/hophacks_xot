@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { keys } from '@mantine/utils';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -104,6 +105,7 @@ export function TableSort({ data }: TableSortProps) {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const router = useRouter();
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -119,7 +121,7 @@ export function TableSort({ data }: TableSortProps) {
   };
 
   const rows = sortedData.map((row) => (
-    <tr key={row.name}>
+    <tr key={row.name} onClick={() => router.push("/transcript/1")}>
       <td>{row.name}</td>
       <td>{row.date}</td>
     </tr>
