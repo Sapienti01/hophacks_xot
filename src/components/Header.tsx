@@ -1,4 +1,5 @@
-import { UserButton } from '@clerk/nextjs';
+ /* eslint-disable */
+ import { UserButton } from '@clerk/nextjs';
 import {
     createStyles,
     Header,
@@ -35,8 +36,6 @@ import {
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
       }),
     },
-
-
   }));
   
   

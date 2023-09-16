@@ -1,5 +1,4 @@
-import { UserButton } from "@clerk/nextjs";
-import { AppShell, Navbar, Header, Button, Grid } from "@mantine/core";
+import { AppShell } from "@mantine/core";
 import { HeaderMegaMenu } from "./Header";
 type Props = {
   children: React.ReactNode;
