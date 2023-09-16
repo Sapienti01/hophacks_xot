@@ -40,7 +40,7 @@ model Transcription {
   simplifiedData String? @db.Text
   audioId String
 
-  appointmentDetails AppointmentDetails @relation( fields: [appointmentDetailsId], references: [id])
+  appointmentDetails AppointmentDetails? @relation( fields: [appointmentDetailsId], references: [id])
   appointmentDetailsId Int @unique
 
   @@index([id])
