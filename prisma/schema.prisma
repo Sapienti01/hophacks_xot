@@ -30,7 +30,7 @@ model Example {
 }
 
 model Transcription {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -41,14 +41,14 @@ model Transcription {
   audioId String
 
   appointmentDetails AppointmentDetails? @relation( fields: [appointmentDetailsId], references: [id])
-  appointmentDetailsId Int @unique
+  appointmentDetailsId String @unique
 
   @@index([id])
 }
 
 model AppointmentDetails {
 
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
