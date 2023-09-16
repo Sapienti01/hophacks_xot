@@ -29,14 +29,15 @@ model Example {
     @@index([name])
 }
 
-model Trascription {
+model Transcription {
   id        Int      @id @default(autoincrement())
-  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId String
-  data String @db.Text
+  data String? @db.Text
+  translatedData String? @db.Text
+  simplifiedData String? @db.Text
   audioId String
 
   appointmentDetails AppointmentDetails @relation( fields: [appointmentDetailsId], references: [id])
@@ -55,7 +56,7 @@ model AppointmentDetails {
   type String 
   Date DateTime
   DoctorName String
-  Transcription Trascription?
+  Transcription Transcription?
 
   @@index([id])
 }
