@@ -7,6 +7,7 @@ import {
     Box,
     rem,
     ActionIcon,
+    Menu,
   } from '@mantine/core';
   import {
     Icon24Hours,
@@ -55,11 +56,7 @@ import {
                 Past Recordings
               </a>
             </Group>
-            <Group >
-            <ActionIcon>
-                <IconWorld />
-                </ActionIcon>
-              <UserButton />    
+            <Group >  
             </Group>
           </Group>
         </Header>
