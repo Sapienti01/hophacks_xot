@@ -36,6 +36,8 @@ model Transcription {
 
   userId String
   data String? @db.Text
+  questions String? @db.Text
+  insights String? @db.Text
   translatedData String? @db.Text
   simplifiedData String? @db.Text
   audioId String
