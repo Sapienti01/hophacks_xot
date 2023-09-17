@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const appointmentDetailsRouter = createTRPCRouter({
     getAppointmentDetails: publicProcedure
-        .input(z.object({id : z.number()}))
+        .input(z.object({id : z.string()}))
         .query (async ({ input, ctx }) => {
             const appointment = await ctx.db.appointmentDetails.findUnique({
                 where: {
@@ -20,7 +20,7 @@ export const appointmentDetailsRouter = createTRPCRouter({
             type: z.string(),
             Date: z.date(),
             DrName: z.string(),
-            transriptionId: z.number(),
+            transriptionId: z.string(),
         }))
         .mutation (async ({ input, ctx }) => {
 
