@@ -39,6 +39,22 @@ export const appointmentDetailsRouter = createTRPCRouter({
             });
             return transcription;
         }),
+
+        updateAppointmentDetails: publicProcedure
+            .input(z.object({ id: z.string(), recName: z.string(), aptType: z.string(), drName: z.string() }))
+            .mutation (async ({ input, ctx }) => {
+                const appointment = await ctx.db.appointmentDetails.update({
+                    where: {
+                        id: input.id,
+                    },
+                    data: {
+                        name: input.recName,
+                        type: input.aptType,
+                        DoctorName: input.drName,
+                    },
+                });
+                return appointment;
+            }),
     
         
     });
