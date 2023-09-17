@@ -11,21 +11,14 @@ const Recorder = () => {
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getStandardUploadPresignedUrl.useMutation();
+  const { mutateAsync: fetchWhisper } = api.whisper.get.useMutation();
+  const [myKey, setMyKey] = useState<string>("");
+  const [myBlob, setMyBlob] = useState<Blob | null>(null);
 
   const recorderControls = useAudioRecorder();
   async function handleWhisperAudio(key: string) {
-    const response = await fetch("/api/getS3andWhisper", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        key: key,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
-    return data.transcript;
+    await fetchWhisper({ key: key });
+
   }
   const addAudioElement = async (blob: Blob) => {
     const url = URL.createObjectURL(blob);
@@ -34,7 +27,8 @@ const Recorder = () => {
     audio.controls = true;
     document.body.appendChild(audio);
     const key = createId();
-
+    setMyKey(key);
+    setMyBlob(blob);
     await fetchPresignedUrls({
       key: key,
     })
@@ -42,23 +36,29 @@ const Recorder = () => {
         setPresignedUrl(url);
       })
       .catch((err) => console.error(err));
-    console.log(blob);
-    if (presignedUrl) {
-      console.log("here");
+    
+  };
+
+
+  const onClick = async () => {
+    if(presignedUrl && myBlob) {
+
+    
+    console.log("here");
       await axios
-        .put(presignedUrl, blob.slice(), {
-          headers: { "Content-Type": blob.type },
+        .put(presignedUrl, myBlob.slice(), {
+          headers: { "Content-Type": myBlob.type },
         })
         .then((response) => {
           console.log(response);
-          console.log("Successfully uploaded ", blob.name);
+          console.log("Successfully uploaded ", myBlob.name);
         })
         .catch((err) => console.error(err));
-      console.log(key);
-      const transcript = handleWhisperAudio(key);
+      const transcript = handleWhisperAudio(myKey);
       console.log("transcript", transcript);
-    }
-  };
+  }
+}
+
 
   return (
     <Stack>
@@ -69,6 +69,9 @@ const Recorder = () => {
           recorderControls={recorderControls}
           showVisualizer={true}
         />
+        { presignedUrl && myBlob &&
+        <Button onClick = {onClick} variant="outline">Save</Button>
+}
       </Center>
     </Stack>
   );
