@@ -48,20 +48,26 @@ export const whisperRouter = createTRPCRouter({
               const ans = await file.Body?.transformToString("utf-8");
               const son = JSON.parse(ans as string)
               const transcript = son.results.transcripts[0].transcript
-              const t = ctx.db.transcription.create({
-                data: {
-                  userId: input.userId,
-                  data: transcript,
-                  audioId: "medical/" + key + "-transcription.json",
-                },
-              });
-              const a = ctx.db.appointmentDetails.create({
+              const a = await ctx.db.appointmentDetails.create({
                 data: {
                   type: "",
                   name: "",
                   DoctorName: "",
                 }
               })
+              const t = ctx.db.transcription.create({
+                data: {
+                  userId: input.userId,
+                  data: transcript,
+                  audioId: "medical/" + key + "-transcription.json",
+                  appointmentDetails: {
+                    connect: {
+                      id: a.id
+                    }
+                  }
+                },
+              });
+              
               return t;
             }
             else if (data.MedicalTranscriptionJob?.TranscriptionJobStatus == "FAILED") {

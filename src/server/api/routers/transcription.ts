@@ -61,24 +61,6 @@ export const transcriptionRouter = createTRPCRouter({
             })
             return newData;
         }),
-
-    createTranscription: publicProcedure
-        .input(z.object({ userId: z.string(), 
-            data: z.string(),
-            audioId: z.string(),
-            name: z.string().optional()
-        }))
-        .mutation (async ({ input, ctx }) => {
-
-            const transcription = await ctx.db.transcription.create({
-                data: {
-                    userId: input.userId,
-                    data: input.data,
-                    audioId: input.audioId,
-                },
-            });
-            return transcription;
-        }),
     
     deleteTranscription: publicProcedure
         .input(z.object({ id: z.string() }))
