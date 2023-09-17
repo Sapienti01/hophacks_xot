@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { StartMedicalTranscriptionJobCommand, GetMedicalTranscriptionJobCommand} from "@aws-sdk/client-transcribe";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 export const whisperRouter = createTRPCRouter({
   get: publicProcedure
@@ -9,7 +10,12 @@ export const whisperRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { key } = input;
       const uri = "s3://hophacks-bucket/" + key;
-      console.log(uri);
+      await ctx.db.example.create({
+        data: {
+          name: "test",
+        },
+      });
+
 
      const params2 = {
         MedicalTranscriptionJobName: key + "-transcription", // Required
@@ -27,7 +33,7 @@ export const whisperRouter = createTRPCRouter({
             new StartMedicalTranscriptionJobCommand(params2)
           );
           console.log("Success - put", data);
-          const func = async () => {
+          while (true) {
             const data = await ctx.transcribeClient.send(
               new GetMedicalTranscriptionJobCommand({
                 "MedicalTranscriptionJobName": key + "-transcription"
@@ -42,24 +48,36 @@ export const whisperRouter = createTRPCRouter({
               const ans = await file.Body?.transformToString("utf-8");
               const son = JSON.parse(ans as string)
               const transcript = son.results.transcripts[0].transcript
-              ctx.db.transcription.create({
+              const t = ctx.db.transcription.create({
                 data: {
-                  userId: "1",
+                  userId: input.userId,
                   data: transcript,
                   audioId: "medical/" + key + "-transcription.json",
                 },
               });
-              clearInterval(intervalId);
-              return data;
+              const a = ctx.db.appointmentDetails.create({
+                data: {
+                  type: "",
+                  name: "",
+                  DoctorName: "",
+                }
+              })
+              return t;
             }
             else if (data.MedicalTranscriptionJob?.TranscriptionJobStatus == "FAILED") {
-              clearInterval(intervalId);
-              console.log("Error");
+              throw new TRPCError({
+                code: 'INTERNAL_SERVER_ERROR',
+                message: 'An unexpected error occurred, please try again later.',
+                // optional: pass the original error to retain stack trace
+              });
             }
           }
-          const intervalId = setInterval(func, 5000);
         } catch (err) {
-          console.log("Error", err);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'An unexpected error occurred, please try again later.',
+            // optional: pass the original error to retain stack trace
+          });
         }
 
     }),

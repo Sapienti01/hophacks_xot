@@ -41,7 +41,7 @@ model Transcription {
   audioId String
 
   appointmentDetails AppointmentDetails? @relation( fields: [appointmentDetailsId], references: [id])
-  appointmentDetailsId String @unique
+  appointmentDetailsId String? @unique
 
   @@index([id])
 }
@@ -54,7 +54,6 @@ model AppointmentDetails {
   updatedAt DateTime @updatedAt
 
   type String 
-  Date DateTime
   DoctorName String
   Transcription Transcription?
 

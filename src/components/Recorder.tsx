@@ -7,13 +7,17 @@ import { api } from "~/utils/api";
 import { createId } from "@paralleldrive/cuid2";
 import { Routes } from "~/utils/types";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 const Recorder = () => {
+  const router = useRouter();
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getStandardUploadPresignedUrl.useMutation();
-  const { mutateAsync: fetchWhisper } = api.whisper.get.useMutation();
+  const { mutateAsync: fetchWhisper } = api.whisper.get.useMutation({onSuccess: (data) => {
+    router.push("transcript/" + data.id);
+  }});
   const [myKey, setMyKey] = useState<string>("");
   const [myBlob, setMyBlob] = useState<Blob | null>(null);
   const {user} = useUser();
