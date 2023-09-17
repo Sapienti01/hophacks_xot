@@ -17,7 +17,6 @@ import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import { Routes } from "~/utils/types";
 import { marked } from "marked";
-import { TabsList } from "@mantine/core/lib/Tabs/TabsList/TabsList";
 
 const Transcript: React.FC = () => {
   const user = useUser();
