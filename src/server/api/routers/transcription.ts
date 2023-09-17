@@ -13,7 +13,7 @@ export const transcriptionRouter = createTRPCRouter({
                 where: {
                     id: input.id,
                 },
-                select: {
+                include: {
                     appointmentDetails: true
                 }
             });
