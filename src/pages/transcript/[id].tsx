@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import { useState } from "react";
 import {
@@ -28,6 +29,7 @@ const Transcript: React.FC = () => {
   const ctx = api.useContext();
 
   const [data, setData] = useState();
+  const [activeTab, setActiveTab] = useState("transciption");
   const [transName, setTransName] = useState<string>();
   const [curTransName, setCurTransName] = useState<string>();
   const [appointmentType, setAppointmentType] = useState<string>();
@@ -40,6 +42,13 @@ const Transcript: React.FC = () => {
   const [numChangeDr, setNumChangeDr] = useState<number>(0);
   const [insights, setInsights] = useState<string>("");
   const [questions, setQuestions] = useState<string>("");
+  const [defaultTab, setDefaultTab] = useState<string>("transcription");
+  const { mutateAsync: updateTranscription } =
+    api.transcription.updateTranscription.useMutation();
+  const { mutateAsync: updateInsights } =
+    api.transcription.updateInsights.useMutation();
+  const { mutateAsync: updateQuestions } =
+    api.transcription.updateQuestions.useMutation();
 
   const {
     data: mydata,
@@ -101,6 +110,7 @@ const Transcript: React.FC = () => {
   };
 
   const handleSimplifyOnClick = async () => {
+    setDefaultTab("transcription");
     const response = await fetch(Routes.gpt, {
       method: "POST",
       headers: {
@@ -127,6 +137,7 @@ const Transcript: React.FC = () => {
     const decoder = new TextDecoder();
     let done = false;
     let total = "";
+    setChunks("");
 
     while (!done) {
       const { value, done: doneReading } = await reader.read();
@@ -137,11 +148,162 @@ const Transcript: React.FC = () => {
       total += chunkValue;
       setText(total);
     }
+    await updateTranscription({
+      id: id as string,
+      data: total,
+    });
+  };
+
+  const handleRegenInsightsOnClick = async () => {
+    setDefaultTab("Insights");
+    const response = await fetch("/api/insights", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt:
+          "Please regenerate the current insights: " +
+          insights +
+          ". Here is the currrent transcription between patient and doctor: " +
+          text +
+          ".",
+      }),
+    });
+    if (!response) {
+      return;
+    }
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    // This data is a ReadableStream
+    const data: ReadableStream<BufferSource> | null = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    let total = "";
+    setChunks("");
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      if (!value) continue;
+      const chunkValue = decoder.decode(value);
+      setChunks((prev) => prev + chunkValue);
+      total += chunkValue;
+      setInsights(total);
+    }
+
+    await updateInsights({
+      id: id as string,
+      data: total,
+    });
+  };
+
+  const handleSimplifyInsightsOnClick = async () => {
+    setDefaultTab("Insights");
+    const response = await fetch("/api/insights", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt:
+          "Please simplify the language of the current insights for the patient: " +
+          insights,
+      }),
+    });
+    if (!response) {
+      return;
+    }
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    // This data is a ReadableStream
+    const data: ReadableStream<BufferSource> | null = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    let total = "";
+    setChunks("");
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      if (!value) continue;
+      const chunkValue = decoder.decode(value);
+      setChunks((prev) => prev + chunkValue);
+      total += chunkValue;
+      setInsights(total);
+    }
+
+    await updateInsights({
+      id: id as string,
+      data: total,
+    });
+  };
+
+  const handleRegenQuestionsOnClick = async () => {
+    setDefaultTab("Questions");
+    const response = await fetch("/api/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt:
+          "Please regenerate more questions for the patient. Here are the current questions. If there are none. Please generate some questions based on the transcript " +
+          questions +
+          ". Here is the currrent transcription between patient and doctor: " +
+          text +
+          ".",
+      }),
+    });
+    if (!response) {
+      return;
+    }
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    // This data is a ReadableStream
+    const data: ReadableStream<BufferSource> | null = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    let total = "";
+    setChunks("");
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      if (!value) continue;
+      const chunkValue = decoder.decode(value);
+      setChunks((prev) => prev + chunkValue);
+      total += chunkValue;
+      setQuestions(total);
+    }
+
+    await updateQuestions({
+      id: id as string,
+      data: total,
+    });
   };
 
   function MyTabs() {
     return (
-      <Tabs defaultValue={"transciption"}>
+      <Tabs defaultValue={defaultTab}>
         <Tabs.List>
           <Tabs.Tab value="transciption">Transciption</Tabs.Tab>
           <Tabs.Tab value="Insights">Insights</Tabs.Tab>
@@ -150,61 +312,85 @@ const Transcript: React.FC = () => {
         <Tabs.Panel value="transciption">
           <Stack>
             <Space h="5" />
-            <Button
-              variant="outline"
-              w={100}
-              onClick={(e) => {
-                e.preventDefault();
-                handleSimplifyOnClick().catch((err) => console.log(err));
-              }}
-            >
-              Simplify
-            </Button>
             <div>
               <Paper shadow="lg" radius="lg" p="md">
                 <div dangerouslySetInnerHTML={{ __html: marked(text) }} />
               </Paper>
             </div>
+            <Space h="5" />
+            <Grid className="ml-2 space-x-4">
+              <Button
+                variant="outline"
+                w={150}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSimplifyOnClick().catch((err) => console.log(err));
+                }}
+              >
+                Simplify
+              </Button>
+            </Grid>
           </Stack>
         </Tabs.Panel>
         <Tabs.Panel value="Insights">
           <Stack>
             <Space h="5" />
-            <Button
-              variant="outline"
-              w={100}
-              onClick={(e) => {
-                e.preventDefault();
-                handleSimplifyOnClick().catch((err) => console.log(err));
-              }}
-            >
-              Simplify
-            </Button>
             <div>
               <Paper shadow="lg" radius="lg" p="md">
                 <div dangerouslySetInnerHTML={{ __html: marked(insights) }} />
               </Paper>
             </div>
+            <Space h="5" />
+            <Grid className="ml-2 space-x-4">
+              <Button
+                variant="outline"
+                w={150}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSimplifyInsightsOnClick().catch((err) =>
+                    console.log(err),
+                  );
+                }}
+              >
+                Simplify
+              </Button>
+
+              <Button
+                variant="outline"
+                w={150}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRegenInsightsOnClick().catch((err) => console.log(err));
+                }}
+              >
+                Regenerate
+              </Button>
+            </Grid>
           </Stack>
         </Tabs.Panel>
         <Tabs.Panel value="Questions">
           <Stack>
             <Space h="5" />
-            <Button
-              variant="outline"
-              w={100}
-              onClick={(e) => {
-                e.preventDefault();
-                handleSimplifyOnClick().catch((err) => console.log(err));
-              }}
-            >
-              Simplify
-            </Button>
             <div>
               <Paper shadow="lg" radius="lg" p="md">
                 <div dangerouslySetInnerHTML={{ __html: marked(questions) }} />
               </Paper>
             </div>
+            <Space h="5" />
+            <Grid className="ml-2 space-x-4">
+              <Button
+                variant="outline"
+                w={150}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRegenQuestionsOnClick().catch((err) =>
+                    console.log(err),
+                  );
+                }}
+              >
+                Regenerate
+              </Button>
+            </Grid>
           </Stack>
         </Tabs.Panel>
       </Tabs>
