@@ -10,13 +10,14 @@ import {
   Button,
   Loader,
   Flex,
-  Textarea,
+  Tabs,
+  Space,
 } from "@mantine/core";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
-import { set, string } from "zod";
 import { Routes } from "~/utils/types";
 import { marked } from "marked";
+import { TabsList } from "@mantine/core/lib/Tabs/TabsList/TabsList";
 
 const Transcript: React.FC = () => {
   const user = useUser();
@@ -38,6 +39,8 @@ const Transcript: React.FC = () => {
   const [numChangeName, setNumChangeName] = useState<number>(0);
   const [numChangeType, setNumChangeType] = useState<number>(0);
   const [numChangeDr, setNumChangeDr] = useState<number>(0);
+  const [insights, setInsights] = useState<string>("");
+  const [questions, setQuestions] = useState<string>("");
 
   const {
     data: mydata,
@@ -65,6 +68,14 @@ const Transcript: React.FC = () => {
           const dateStr = new Date(data.createdAt).toLocaleDateString();
           setDate(dateStr);
           setText(data.data ? data.data : "");
+          setInsights(
+            data.insights ? data.insights : "You currently have no insights.",
+          );
+          setQuestions(
+            data.questions
+              ? data.questions
+              : "You currently have no questions.",
+          );
           setUserId(data.userId ? data.userId : "");
         }
       },
@@ -129,26 +140,84 @@ const Transcript: React.FC = () => {
     }
   };
 
+  function MyTabs() {
+    return (
+      <Tabs defaultValue={"transciption"}>
+        <Tabs.List>
+          <Tabs.Tab value="transciption">Transciption</Tabs.Tab>
+          <Tabs.Tab value="Insights">Insights</Tabs.Tab>
+          <Tabs.Tab value="Questions">Questions</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="transciption">
+          <Stack>
+            <Space h="5" />
+            <Button
+              variant="outline"
+              w={100}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSimplifyOnClick().catch((err) => console.log(err));
+              }}
+            >
+              Simplify
+            </Button>
+            <div>
+              <Paper shadow="lg" radius="lg" p="md">
+                <div dangerouslySetInnerHTML={{ __html: marked(text) }} />
+              </Paper>
+            </div>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel value="Insights">
+          <Stack>
+            <Space h="5" />
+            <Button
+              variant="outline"
+              w={100}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSimplifyOnClick().catch((err) => console.log(err));
+              }}
+            >
+              Simplify
+            </Button>
+            <div>
+              <Paper shadow="lg" radius="lg" p="md">
+                <div dangerouslySetInnerHTML={{ __html: marked(insights) }} />
+              </Paper>
+            </div>
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel value="Questions">
+          <Stack>
+            <Space h="5" />
+            <Button
+              variant="outline"
+              w={100}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSimplifyOnClick().catch((err) => console.log(err));
+              }}
+            >
+              Simplify
+            </Button>
+            <div>
+              <Paper shadow="lg" radius="lg" p="md">
+                <div dangerouslySetInnerHTML={{ __html: marked(questions) }} />
+              </Paper>
+            </div>
+          </Stack>
+        </Tabs.Panel>
+      </Tabs>
+    );
+  }
+
   return (
     <Grid grow gutter="md">
       <Grid.Col span={4}>
         <Stack>
           <Title>{transName}</Title>
-          <Button
-            variant="outline"
-            w={100}
-            onClick={(e) => {
-              e.preventDefault();
-              handleSimplifyOnClick().catch((err) => console.log(err));
-            }}
-          >
-            Simplify
-          </Button>
-          <div>
-            <Paper shadow="lg" radius="lg" p="md">
-              <div dangerouslySetInnerHTML={{ __html: marked(text) }} />
-            </Paper>
-          </div>
+          <MyTabs />
         </Stack>
       </Grid.Col>
       <Grid.Col offset={1} span={2}>

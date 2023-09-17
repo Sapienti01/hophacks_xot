@@ -12,6 +12,9 @@ import {
   TextInput,
   rem,
   Loader,
+  Grid,
+  Flex,
+  Paper,
 } from '@mantine/core';
 import { keys } from '@mantine/utils';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
@@ -145,20 +148,24 @@ console.log(userId)
 
   const rows = sortedData.map((row) => (
     <tr key={row.name} onClick={() => router.push("/transcript/" + row.id)}>
-      <td>{row.name}</td>
+      <td>{row.name != "" ? row.name : "Untitled"}</td>
       <td>{row.date}</td>
     </tr>
   ));
 
   return (
+    <Paper p = "md" shadow="md" radius="md">
     <ScrollArea>
-      <TextInput
+      <Flex>
+        <TextInput w={"25%"}
         placeholder="Search by name"
         mb="md"
         icon={<IconSearch size="0.9rem" stroke={1.5} />}
         value={search}
         onChange={handleSearchChange}
       />
+      </Flex>
+
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="xs" miw={700} sx={{ tableLayout: 'fixed' }}>
         <thead>
           <tr>
@@ -191,5 +198,6 @@ console.log(userId)
         </tbody>
       </Table>
     </ScrollArea>
+    </Paper>
   );
 }
