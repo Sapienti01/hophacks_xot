@@ -1,25 +1,36 @@
 /* eslint-disable */
-import { Button, Center, Container, Stack, Title } from "@mantine/core";
+import { Button, Center, Container, LoadingOverlay, Stack, Title } from "@mantine/core";
 import axios from "axios";
 import { useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { api } from "~/utils/api";
 import { createId } from "@paralleldrive/cuid2";
 import { Routes } from "~/utils/types";
+import { useUser } from "@clerk/nextjs";
 
 const Recorder = () => {
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
+  const [visible, setVisible] = useState<boolean>(false);
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getStandardUploadPresignedUrl.useMutation();
   const { mutateAsync: fetchWhisper } = api.whisper.get.useMutation();
   const [myKey, setMyKey] = useState<string>("");
   const [myBlob, setMyBlob] = useState<Blob | null>(null);
+  const {user} = useUser();
+
 
   const recorderControls = useAudioRecorder();
-  async function handleWhisperAudio(key: string) {
-    await fetchWhisper({ key: key });
 
+  if (user === undefined || user === null) {
+    return <div>loading...</div>;
   }
+
+  async function handleWhisperAudio(key: string) {
+    if (user) {
+      await fetchWhisper({ key: key, userId: user.id });
+    }
+  }
+  
   const addAudioElement = async (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const audio = document.createElement("audio");
@@ -42,9 +53,7 @@ const Recorder = () => {
 
   const onClick = async () => {
     if(presignedUrl && myBlob) {
-
-    
-    console.log("here");
+      setVisible(true);
       await axios
         .put(presignedUrl, myBlob.slice(), {
           headers: { "Content-Type": myBlob.type },
@@ -54,14 +63,15 @@ const Recorder = () => {
           console.log("Successfully uploaded ", myBlob.name);
         })
         .catch((err) => console.error(err));
-      const transcript = handleWhisperAudio(myKey);
-      console.log("transcript", transcript);
+      await handleWhisperAudio(myKey);
+      setVisible(false);
   }
 }
 
 
   return (
     <Stack>
+      <LoadingOverlay visible={visible} overlayBlur={2} />
       <Title>Record your Appointment</Title>
       <Center>
         <AudioRecorder
