@@ -102,4 +102,30 @@ export const transcriptionRouter = createTRPCRouter({
       });
       return transcription;
     }),
+  updateQuestions: publicProcedure
+    .input(z.object({ id: z.string(), data: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const transcription = await ctx.db.transcription.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          questions: input.data,
+        },
+      });
+      return transcription;
+    }),
+  updateInsights: publicProcedure
+    .input(z.object({ id: z.string(), data: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const transcription = await ctx.db.transcription.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          insights: input.data,
+        },
+      });
+      return transcription;
+    }),
 });
