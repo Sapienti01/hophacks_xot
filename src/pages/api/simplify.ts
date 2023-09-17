@@ -26,7 +26,7 @@ const handler = async (req: NextRequest): Promise<Response> => {
       {
         role: "system",
         content:
-          "You are an expert at parsing through raw audio transcripts of meetings between Doctors and Patients and formatting them into labeled, Doctor-Patient conversations with HTML tags. You are able to identify when Doctors are speaking and when Patients are speaking. You should preserve the full conversation and effectively identify who's speaking. Please format the provided transcript into a Doctor-Patient conversation with HTML tags. ",
+          "You are an expert at simplifying transcripts of Doctor-Patient meetings, particularly where the Doctor may be using verbose language. Your goal is to edit the transcript such that any esoteric language is conveyed more easily to the Patient without changing the meaning of the conversation. Please simplify the provided transcript. ",
       },
       { role: "user", content: prompt },
     ],
