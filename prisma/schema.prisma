@@ -59,18 +59,3 @@ model AppointmentDetails {
 
   @@index([id])
 }
-
-model Language {
-
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String 
-
-  lang langs @default(EN)
-  
-
-  @@index([id])
-}
