@@ -1,9 +1,11 @@
+/* eslint-disable */
 import { Button, Center, Container, Stack, Title } from "@mantine/core";
 import axios from "axios";
 import { useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { api } from "~/utils/api";
 import { createId } from "@paralleldrive/cuid2";
+import { Routes } from "~/utils/types";
 
 const Recorder = () => {
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
@@ -11,6 +13,20 @@ const Recorder = () => {
     api.s3.getStandardUploadPresignedUrl.useMutation();
 
   const recorderControls = useAudioRecorder();
+  async function handleWhisperAudio(key: string) {
+    const response = await fetch("/api/getS3andWhisper", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key: key,
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+    return data.transcript;
+  }
   const addAudioElement = async (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const audio = document.createElement("audio");
@@ -38,6 +54,9 @@ const Recorder = () => {
           console.log("Successfully uploaded ", blob.name);
         })
         .catch((err) => console.error(err));
+      console.log(key);
+      const transcript = handleWhisperAudio(key);
+      console.log("transcript", transcript);
     }
   };
 
