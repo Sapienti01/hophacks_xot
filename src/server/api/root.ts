@@ -3,6 +3,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { s3Router } from "./routers/s3";
 import { appointmentDetailsRouter } from "./routers/appointmentdetails";
 import { transcriptionRouter } from "./routers/transcription";
+import { whisperRouter } from "./routers/whisper";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   s3: s3Router,
   appointmentDetails: appointmentDetailsRouter,
   transcription: transcriptionRouter,
+  whisper: whisperRouter,
 });
 
 // export type definition of API

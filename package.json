@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.414.0",
+    "@aws-sdk/client-transcribe": "^3.414.0",
     "@aws-sdk/s3-request-presigner": "^3.414.0",
     "@clerk/nextjs": "^4.23.5",
     "@emotion/react": "^11.11.1",
@@ -26,8 +27,10 @@
     "@trpc/next": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
+    "aws-sdk": "^2.1459.0",
     "axios": "^1.5.0",
     "eventsource-parser": "^1.0.0",
+    "fs": "^0.0.1-security",
     "next": "^13.4.19",
     "openai": "^4.7.1",
     "react": "18.2.0",

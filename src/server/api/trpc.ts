@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { db } from "~/server/db";
 import { s3 } from "./aws/s3";
+import { transcribeClient } from "./aws/transcribe";
 
 /**
  * 1. CONTEXT
@@ -37,7 +38,8 @@ type CreateContextOptions = Record<string, never>;
 const createInnerTRPCContext = (_opts: CreateContextOptions) => {
   return {
     db,
-    s3
+    s3,
+    transcribeClient,
   };
 };
 
