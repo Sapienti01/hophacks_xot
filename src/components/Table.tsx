@@ -1,4 +1,5 @@
  /* eslint-disable */
+
 import { use, useState } from 'react';
 import {
   createStyles,
@@ -105,7 +106,12 @@ function sortData(
   );
 }
 
+
 export function TableSort({ userId }: TableSortProps) {
+
+  const user = useUser();
+console.log(user)
+
   const [search, setSearch] = useState('');
 const [sortedData, setSortedData] = useState([] as RowData[]);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
