@@ -57,6 +57,7 @@ import {
               </a>
             </Group>
             <Group >  
+              <UserButton />
             </Group>
           </Group>
         </Header>
