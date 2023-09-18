@@ -1,6 +1,16 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+
+enum langs {
+  EN
+  SP
+  FR
+  HE
+  TR 
+  BL
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,4 +27,37 @@ model Example {
     updatedAt DateTime @updatedAt
 
     @@index([name])
+}
+
+model Transcription {
+  id        String      @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  data String? @db.Text
+  questions String? @db.Text
+  insights String? @db.Text
+  translatedData String? @db.Text
+  simplifiedData String? @db.Text
+  audioId String
+
+  appointmentDetails AppointmentDetails @relation( fields: [appointmentDetailsId], references: [id])
+  appointmentDetailsId String @unique
+
+  @@index([id])
+}
+
+model AppointmentDetails {
+
+  id        String      @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type String 
+  DoctorName String
+  Transcription Transcription?
+
+  @@index([id])
 }
